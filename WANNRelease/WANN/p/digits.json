@@ -1,0 +1,10 @@
+{
+    "task":"digits",
+    "alg_nMean": 8,
+    "alg_nReps": 1,
+    "maxGen": 1024,
+    "popSize": 128,
+    "prob_crossover": 0.0,
+    "prob_initEnable": 0.05,
+    "select_tournSize": 32
+}
