@@ -1,12 +1,13 @@
 import numpy as np
 import copy
+from graphviz import Digraph
 
 
 # -- Individual Class ---------------------------------------------------- -- #
 
 class Ind():
   """Individual class: genes, network, and fitness
-  """ 
+  """
   def __init__(self, conn, node):
     """Intialize individual with given genes
     Args:
@@ -20,7 +21,7 @@ class Ind():
              [0,:] == Node Id
              [1,:] == Type (1=input, 2=output 3=hidden 4=bias)
              [2,:] == Activation function (as int)
-  
+
     Attributes:
       node    - (np_array) - node genes (see args)
       conn    - (np_array) - conn genes (see args)
@@ -29,9 +30,9 @@ class Ind():
       wMat    - (np_array) - weight matrix, one row and column for each node
                 [N X N]    - rows: connection from; cols: connection to
       wVec    - (np_array) - wMat as a flattened vector
-                [N**2 X 1]    
+                [N**2 X 1]
       aVec    - (np_array) - activation function of each node (as int)
-                [N X 1]    
+                [N X 1]
       nConn   - (int)      - number of connections
       fitness - (double)   - fitness averaged over all trials (higher better)
       X fitMax  - (double)   - best fitness over all trials (higher better)
@@ -73,6 +74,16 @@ class Ind():
     else:
       return False
 
+  def tree(self):
+    G = Digraph(format="png")
+    for i in range(len(self.node[0])):
+      G.node(str(i))
+    for i in range(len(self.conn[0])):
+      if self.conn[4][i]:
+        G.edge(str(int(self.conn[1][i])), str(int(self.conn[2][i])), label=str(self.conn[3][i]))
+    return str(G)
+
+
 
 
 # -- ANN Ordering -------------------------------------------------------- -- #
@@ -88,12 +99,12 @@ def getNodeOrder(nodeG,connG):
             [2,:] == Activation function (as int)
 
     connG - (np_array) - connection genes
-            [5 X nUniqueGenes] 
+            [5 X nUniqueGenes]
             [0,:] == Innovation Number (unique Id)
             [1,:] == Source Node Id
             [2,:] == Destination Node Id
             [3,:] == Weight Value
-            [4,:] == Enabled?  
+            [4,:] == Enabled?
 
   Returns:
     Q    - [int]      - sorted node order as indices
@@ -112,17 +123,17 @@ def getNodeOrder(nodeG,connG):
   node = np.copy(nodeG)
   nIns = len(node[0,node[1,:] == 1]) + len(node[0,node[1,:] == 4])
   nOuts = len(node[0,node[1,:] == 2])
-  
+
   # Create connection and initial weight matrices
   conn[3,conn[4,:]==0] = np.nan # disabled but still connected
   src  = conn[1,:].astype(int)
   dest = conn[2,:].astype(int)
-  
+
   lookup = node[0,:].astype(int)
   for i in range(len(lookup)): # Can we vectorize this?
     src[np.where(src==lookup[i])] = i
     dest[np.where(dest==lookup[i])] = i
-  
+
   wMat = np.zeros((np.shape(node)[1],np.shape(node)[1]))
   wMat[src,dest] = conn[3,:]
   connMat = wMat[nIns+nOuts:,nIns+nOuts:]
@@ -142,18 +153,18 @@ def getNodeOrder(nodeG,connG):
 
     if sum(edge_in) == 0:
       break
-  
+
   # Add In and outs back and reorder wMat according to sort
   Q += nIns+nOuts
   Q = np.r_[lookup[:nIns], Q, lookup[nIns:nIns+nOuts]]
   wMat = wMat[np.ix_(Q,Q)]
-  
+
   return Q, wMat
 
 def getLayer(wMat):
   """Get layer of each node in weight matrix
   Traverse wMat by row, collecting layer of all nodes that connect to you (X).
-  Your layer is max(X)+1. Input and output nodes are ignored and assigned to 
+  Your layer is max(X)+1. Input and output nodes are ignored and assigned to
   layer 0 and max(X)+1 at the end.
 
   Args:
@@ -164,11 +175,11 @@ def getLayer(wMat):
     layer - [int]      - layer # of each node
 
   Todo:
-    * With very large networks this might be a performance sink -- especially, 
+    * With very large networks this might be a performance sink -- especially,
     given that this happen in the serial part of the algorithm. There is
     probably a more clever way to do this given the adjacency matrix.
   """
-  wMat[np.isnan(wMat)] = 0  
+  wMat[np.isnan(wMat)] = 0
   wMat[wMat!=0]=1
   nNode = np.shape(wMat)[0]
   layer = np.zeros((nNode))
@@ -177,8 +188,8 @@ def getLayer(wMat):
     for curr in range(nNode):
       srcLayer=np.zeros((nNode))
       for src in range(nNode):
-        srcLayer[src] = layer[src]*wMat[src,curr]   
-      layer[curr] = np.max(srcLayer)+1    
+        srcLayer[src] = layer[src]*wMat[src,curr]
+      layer[curr] = np.max(srcLayer)+1
     if all(prevOrder==layer):
       break
   return layer-1
@@ -189,8 +200,8 @@ def getLayer(wMat):
 def act(weights, aVec, nInput, nOutput, inPattern):
   """Returns FFANN output given a single input pattern
   If the variable weights is a vector it is turned into a square weight matrix
-  
-  Allows the network to return the result of several samples at once if given 
+
+  Allows the network to return the result of several samples at once if given
   a matrix instead of a vector of inputs:
       Dim 0 : individual samples
       Dim 1 : dimensionality of pattern (# of inputs)
@@ -198,7 +209,7 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   Args:
     weights   - (np_array) - ordered weight matrix or vector
                 [N X N] or [N**2]
-    aVec      - (np_array) - activation function of each node 
+    aVec      - (np_array) - activation function of each node
                 [N X 1]    - stored as ints (see applyAct in ann.py)
     nInput    - (int)      - number of input nodes
     nOutput   - (int)      - number of output nodes
@@ -224,7 +235,7 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   else:
       nSamples = 1
 
-  # Run input pattern through ANN    
+  # Run input pattern through ANN
   nodeAct  = np.zeros((nSamples,nNodes))
   nodeAct[:,0] = 1 # Bias activation
   nodeAct[:,1:nInput+1] = inPattern
@@ -233,9 +244,9 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   iNode = nInput+1
   for iNode in range(nInput+1,nNodes):
       rawAct = np.dot(nodeAct, wMat[:,iNode]).squeeze()
-      nodeAct[:,iNode] = applyAct(aVec[iNode], rawAct) 
+      nodeAct[:,iNode] = applyAct(aVec[iNode], rawAct)
       #print(nodeAct)
-  output = nodeAct[:,-nOutput:]   
+  output = nodeAct[:,-nOutput:]
   return output
 
 def applyAct(actId, x):
@@ -271,13 +282,13 @@ def applyAct(actId, x):
     #value = (np.tanh(50*x/2.0) + 1.0)/2.0
 
   elif actId == 3: # Sin
-    value = np.sin(np.pi*x) 
+    value = np.sin(np.pi*x)
 
   elif actId == 4: # Gaussian with mean 0 and sigma 1
     value = np.exp(-np.multiply(x, x) / 2.0)
 
   elif actId == 5: # Hyperbolic Tangent (signed)
-    value = np.tanh(x)     
+    value = np.tanh(x)
 
   elif actId == 6: # Sigmoid (unsigned)
     value = (np.tanh(x/2.0) + 1.0)/2.0
@@ -286,29 +297,29 @@ def applyAct(actId, x):
     value = -x
 
   elif actId == 8: # Absolute Value
-    value = abs(x)   
-    
+    value = abs(x)
+
   elif actId == 9: # Relu
-    value = np.maximum(0, x)   
+    value = np.maximum(0, x)
 
   elif actId == 10: # Cosine
     value = np.cos(np.pi*x)
 
   elif actId == 11: # Squared
     value = x**2
-    
+
   else:
     value = x
 
   return value
 
 # -- Action Selection ---------------------------------------------------- -- #
-def selectAct(action, actSelect):  
+def selectAct(action, actSelect):
   """Selects action based on vector of actions
 
     We aren't selecting a single action:
     - Softmax: a softmax normalized distribution of values is returned
-    - Default: all actions are returned 
+    - Default: all actions are returned
 
   Args:
     action   - (np_array) - vector weighting each possible action
@@ -317,7 +328,7 @@ def selectAct(action, actSelect):
   Returns:
     i         - (int) or (np_array)     - chosen index
                          [N X 1]
-  """    
+  """
   if actSelect == 'softmax':
     action = softmax(action)
   else:
@@ -334,9 +345,9 @@ def softmax(x):
 
   Returns:
     softmax - (np_array) - softmax normalized in dim 1
-  
-  Todo: Untangle all the transposes...    
-  """  
+
+  Todo: Untangle all the transposes...
+  """
   if x.ndim == 1:
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum(axis=0)
@@ -349,7 +360,7 @@ def softmax(x):
 # -- File I/O ------------------------------------------------------------ -- #
 """ Networks are exported as [N x (N+1] matrices, where the first NxN portion
 is a weight matrix (rows==source, cols==destination) and the last column are
-integers interpreted as activation functions as per the 'act' function above 
+integers interpreted as activation functions as per the 'act' function above
 """
 def exportNet(filename,wMat, aVec):
   indMat = np.c_[wMat,aVec]
@@ -363,7 +374,6 @@ def importNet(fileName):
   # Create weight key
   wVec = wMat.flatten()
   wVec[np.isnan(wVec)]=0
-  wKey = np.where(wVec!=0)[0] 
+  wKey = np.where(wVec!=0)[0]
 
   return wVec, aVec, wKey
-
