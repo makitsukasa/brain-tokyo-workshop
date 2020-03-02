@@ -31,7 +31,7 @@ def master():
 
     data = gatherData(data,wann,gen,hyp)
     print(gen, '\t - \t', data.display())
-    print(data.tree)
+    # print(data.tree)
 
   # Clean up and data gathering at end of run
   data = gatherData(data,wann,gen,hyp,savePop=True)

@@ -70,6 +70,15 @@ classify = classify._replace(in_out_labels=label)
 games['digits'] = classify
 
 
+# > MNIST [4x4] data set
+mnist16 = classify._replace(\
+  env_name='Classify_mnist16', input_size=16, i_act=np.full(16,1))
+L = [list(range(1, mnist16.input_size)),\
+     list(range(0, mnist16.output_size))]
+label = [item for sublist in L for item in sublist]
+mnist16 = mnist16._replace(in_out_labels=label)
+games['mnist16'] = mnist16
+
 # > MNIST [16x16] data set
 mnist256 = classify._replace(\
   env_name='Classify_mnist256', input_size=256, i_act=np.full(256,1))
