@@ -21,7 +21,7 @@ class DataGatherer():
     self.spec_fit = []
     self.field = ['x_scale','fit_med','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med',\
-                  'tree', 'order',\
+                  'tree', 'wMat', 'order',\
                   'elite','best']
 
     self.objVals = np.array([])
@@ -63,6 +63,7 @@ class DataGatherer():
 
     # --- Generation fit/complexity stats ------------------------------------
     self.tree     = np.append(self.tree, ind.tree())
+    self.wMat     = np.append(self.wMat, ind.wMat)
     self.order    = np.append(self.order, ind.order())
     self.node_med = np.append(self.node_med,np.median(nodes))
     self.conn_med = np.append(self.conn_med,np.median(conns))
