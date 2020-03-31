@@ -84,10 +84,6 @@ class Ind():
         G.edge(str(int(self.conn[1][i])), str(int(self.conn[2][i])))
     return str(G)
 
-  def wMat(self):
-    order, wMat = getNodeOrder(self.node, self.conn)
-    return wMat
-
   def order(self):
     order, wMat = getNodeOrder(self.node, self.conn)
     return order
