@@ -84,13 +84,6 @@ class Ind():
         G.edge(str(int(self.conn[1][i])), str(int(self.conn[2][i])))
     return str(G)
 
-  def wMat(self):
-    order, wMat = getNodeOrder(self.node, self.conn)
-    return wMat
-
-  def order(self):
-    order, wMat = getNodeOrder(self.node, self.conn)
-    return order
 
 
 
@@ -362,26 +355,3 @@ def softmax(x):
   else:
     e_x = np.exp(x.T - np.max(x,axis=1))
     return (e_x / e_x.sum(axis=0)).T
-
-
-
-# -- File I/O ------------------------------------------------------------ -- #
-""" Networks are exported as [N x (N+1] matrices, where the first NxN portion
-is a weight matrix (rows==source, cols==destination) and the last column are
-integers interpreted as activation functions as per the 'act' function above
-"""
-def exportNet(filename,wMat, aVec):
-  indMat = np.c_[wMat,aVec]
-  np.savetxt(filename, indMat, delimiter=',',fmt='%1.2e')
-
-def importNet(fileName):
-  ind = np.loadtxt(fileName, delimiter=',')
-  wMat = ind[:,:-1]     # Weight Matrix
-  aVec = ind[:,-1]      # Activation functions
-
-  # Create weight key
-  wVec = wMat.flatten()
-  wVec[np.isnan(wVec)]=0
-  wKey = np.where(wVec!=0)[0]
-
-  return wVec, aVec, wKey

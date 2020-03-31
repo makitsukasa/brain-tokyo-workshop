@@ -63,6 +63,8 @@ class DataGatherer():
 
     # --- Generation fit/complexity stats ------------------------------------
     self.tree     = np.append(self.tree, ind.tree())
+    self.wMat     = np.append(self.tree, ind.wMat())
+    self.tree     = np.append(self.tree, ind.tree())
     self.node_med = np.append(self.node_med,np.median(nodes))
     self.conn_med = np.append(self.conn_med,np.median(conns))
     self.fit_med  = np.append(self.fit_med, np.median(fitness))

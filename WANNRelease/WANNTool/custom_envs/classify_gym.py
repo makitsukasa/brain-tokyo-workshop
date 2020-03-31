@@ -13,7 +13,7 @@ class ClassifyEnv(gym.Env):
 
   def __init__(self, trainSet, target, batch_size=1000, accuracy_mode=False):
     """
-    Data set is a tuple of 
+    Data set is a tuple of
     [0] input data: [nSamples x nInputs]
     [1] labels:     [nSamples x 1]
 
@@ -47,18 +47,18 @@ class ClassifyEnv(gym.Env):
     ''' Randomly select from training set'''
     self.np_random, seed = seeding.np_random(seed)
     return [seed]
-  
+
   def reset(self):
-    ''' Initialize State'''    
+    ''' Initialize State'''
     #print('Lucky number', np.random.randint(10)) # same randomness?
     self.trainOrder = np.random.permutation(len(self.target))
     self.t = 0 # timestep
     self.currIndx = self.trainOrder[self.t:self.t+self.batch]
     self.state = self.trainSet[self.currIndx,:]
     return self.state
-  
+
   def step(self, action):
-    ''' 
+    '''
     Judge Classification, increment to next batch
     action - [batch x output] - softmax output
     '''
@@ -94,10 +94,10 @@ class ClassifyEnv(gym.Env):
 # -- Data Sets ----------------------------------------------------------- -- #
 
 def digit_raw():
-  ''' 
-  Converts 8x8 scikit digits to 
+  '''
+  Converts 8x8 scikit digits to
   [samples x pixels]  ([N X 64])
-  '''  
+  '''
   from sklearn import datasets
   digits = datasets.load_digits()
   z = (digits.images/16)
@@ -105,10 +105,10 @@ def digit_raw():
   return z, digits.target
 
 def mnist_784():
-  ''' 
-  Converts 28x28 mnist digits to 
+  '''
+  Converts 28x28 mnist digits to
   [samples x pixels]  ([N X 784])
-  '''  
+  '''
   import mnist
   z = (mnist.train_images()/255)
   z = preprocess(z,(28,28))
@@ -116,10 +116,10 @@ def mnist_784():
   return z, mnist.train_labels()
 
 def mnist_256():
-  ''' 
-  Converts 28x28 mnist digits to [16x16] 
+  '''
+  Converts 28x28 mnist digits to [16x16]
   [samples x pixels]  ([N X 256])
-  '''  
+  '''
   import mnist
   z = (mnist.train_images()/255)
   z = preprocess(z,(16,16))
@@ -128,10 +128,10 @@ def mnist_256():
   return z, mnist.train_labels()
 
 def mnist_256_test():
-  ''' 
-  Converts 28x28 mnist digits to [16x16] 
+  '''
+  Converts 28x28 mnist digits to [16x16]
   [samples x pixels]  ([N X 256])
-  '''  
+  '''
   import mnist
   z = (mnist.test_images()/255)
   z = preprocess(z,(16,16))
@@ -140,10 +140,10 @@ def mnist_256_test():
   return z, mnist.test_labels()
 
 def mnist_patch9():
-  ''' 
+  '''
   Crops 28x28 mnist digits to a [9x9] patch
   [samples x pixels]  ([N X 81])
-  '''  
+  '''
   import mnist
   z = (mnist.train_images()/255)
   z = preprocess(z,(28,28),patchDim=(9,9),patchCorner=(12,12))
@@ -155,7 +155,7 @@ def mnist_patch9():
   ---
     if self.patchSize != None: # (add self.patchSize to class)
       z = np.reshape(self.state,(len(self.currIndx),28,28))
-      
+
       corner = (np.random.randint(28 - self.patchSize),\
                 np.random.randint(28 - self.patchSize) )
 
@@ -177,7 +177,7 @@ def preprocess(img,size, patchCorner=(0,0), patchDim=None, unskew=True):
   procImg  = np.empty((nImg,size[0],size[1]))
 
   # Unskew and Resize
-  if unskew == True:    
+  if unskew == True:
     for i in range(nImg):
       procImg[i,:,:] = deskew(cv2.resize(img[i,:,:],size),size)
 
@@ -201,7 +201,7 @@ def deskew(image, image_shape, negated=True):
 
   source: https://github.com/vsvinayak/mnist-helper
   """
-  
+
   # negate the image
   if not negated:
       image = 255-image
@@ -213,9 +213,9 @@ def deskew(image, image_shape, negated=True):
   skew = m['mu11']/m['mu02']
   M = np.float32([[1, skew, -0.5*image_shape[0]*skew], [0,1,0]])
   img = cv2.warpAffine(image, M, image_shape, \
-    flags=cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR)  
+    flags=cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR)
   return img
 
 
 
- 
+

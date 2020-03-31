@@ -1,0 +1,20 @@
+--------------------------------------------------------------------------
+WARNING: Linux kernel CMA support was requested via the
+btl_vader_single_copy_mechanism MCA variable, but CMA support is
+not available due to restrictive ptrace settings.
+
+The vader shared memory BTL will fall back on another single-copy
+mechanism if one is available. This may result in lower performance.
+
+  Local host: marcia
+--------------------------------------------------------------------------
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+	*** Running with hyperparameters:  p/mnist16.json 	***
+['mpirun', '-np', '9', '/home/tsukasa/bin/python', 'wann_train.py', '-p', 'p/mnist16.json']

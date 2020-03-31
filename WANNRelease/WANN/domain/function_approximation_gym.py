@@ -9,7 +9,7 @@ import sys
 import cv2
 import math
 
-class ClassifyEnv(gym.Env):
+class FunctionApproximationEnv(gym.Env):
 
   def __init__(self, trainSet, target):
     """
@@ -62,30 +62,9 @@ class ClassifyEnv(gym.Env):
     y = self.target[self.currIndx]
     m = y.shape[0]
 
-    # action = np.ones_like(action)
-
-
-    if True:
-      p = np.argmax(action, axis=1)
-      accuracy = (float(np.sum(p==y)) / self.batch)
-      reward = accuracy
-    else:
-      log_likelihood = -np.log(action[range(m),y])
-      loss = np.sum(log_likelihood) / m
-
-      # np.set_printoptions(precision=0, suppress=True, threshold=1000, floatmode='fixed')
-      # print("action")
-      # print(action)
-      # print("-np.log(action)")
-      # print(-np.log(action))
-      # print("range(m)")
-      # print(range(m))
-      # print("y")
-      # print(y)
-      # print("action[range(m),y]")
-      # print(action[range(m),y])
-      # loss = np.sum(action[range(m),y])
-      reward = -loss
+    log_likelihood = -np.log(action[range(m),y])
+    loss = np.sum(log_likelihood) / m
+    reward = -loss
 
     if self.t_limit > 0: # We are doing batches
       reward *= (1/self.t_limit) # average
@@ -116,18 +95,6 @@ def digit_raw():
   z = (digits.images/16)
   z = z.reshape(-1, (64))
   return z, digits.target
-
-def mnist_16():
-  '''
-  Converts 28x28 mnist digits to [4x4]
-  [samples x pixels]  ([N X 16])
-  '''
-  import mnist
-  z = (mnist.train_images()/15)
-  z = preprocess(z,(4,4))
-
-  z = z.reshape(-1, (16))
-  return z, mnist.train_labels()
 
 def mnist_256():
   '''

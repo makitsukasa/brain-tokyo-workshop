@@ -6,7 +6,7 @@
 		{
 			"label": "train",
 			"type": "shell",
-			"command": "python wann_train.py -p p/mnist16.json",
+			"command": "python wann_train.py -p p/mnist256.json",
 			"group": {
 				"kind": "build",
 				"isDefault": true
