@@ -2,8 +2,8 @@
     "task":"mnist16",
     "alg_nMean": 8,
     "alg_nReps": 1,
-    "maxGen": 400,
-    "popSize": 20,
+    "maxGen": 4096,
+    "popSize": 50,
     "prob_initEnable": 0.05,
-    "select_tournSize": 4
+    "select_tournSize": 10
 }
