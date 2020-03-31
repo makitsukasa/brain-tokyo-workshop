@@ -62,9 +62,30 @@ class ClassifyEnv(gym.Env):
     y = self.target[self.currIndx]
     m = y.shape[0]
 
-    log_likelihood = -np.log(action[range(m),y])
-    loss = np.sum(log_likelihood) / m
-    reward = -loss
+    # action = np.ones_like(action)
+
+
+    if True:
+      p = np.argmax(action, axis=1)
+      accuracy = (float(np.sum(p==y)) / self.batch)
+      reward = accuracy
+    else:
+      log_likelihood = -np.log(action[range(m),y])
+      loss = np.sum(log_likelihood) / m
+
+      # np.set_printoptions(precision=0, suppress=True, threshold=1000, floatmode='fixed')
+      # print("action")
+      # print(action)
+      # print("-np.log(action)")
+      # print(-np.log(action))
+      # print("range(m)")
+      # print(range(m))
+      # print("y")
+      # print(y)
+      # print("action[range(m),y]")
+      # print(action[range(m),y])
+      # loss = np.sum(action[range(m),y])
+      reward = -loss
 
     if self.t_limit > 0: # We are doing batches
       reward *= (1/self.t_limit) # average
