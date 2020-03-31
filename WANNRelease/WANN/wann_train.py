@@ -33,7 +33,7 @@ def master():
     print(gen, '\t - \t', data.display())
     if gen == 200:
         print(data.tree[-1])
-        print(data.wMat[-1])
+        print(data.wMat)
         print(data.order[-1])
 
   # Clean up and data gathering at end of run
