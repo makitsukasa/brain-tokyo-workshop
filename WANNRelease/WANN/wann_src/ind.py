@@ -40,7 +40,7 @@ class Ind():
       birth   - (int)      - generation born
       species - (int)      - ID of species
     """
-    self.node    = np.copy(node)
+    self.node    = np.copy (node)
     self.conn    = np.copy(conn)
     self.nInput  = sum(node[1,:]==1)
     self.nOutput = sum(node[1,:]==2)
@@ -247,9 +247,10 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   # Propagate signal through hidden to output nodes
   iNode = nInput+1
   for iNode in range(nInput+1,nNodes):
-      rawAct = np.dot(nodeAct, wMat[:,iNode]).squeeze()
+      # rawAct = np.dot(nodeAct, wMat[:,iNode]).squeeze()
+      rawAct = np.zeros(nSamples)
       nodeAct[:,iNode] = applyAct(aVec[iNode], rawAct)
-      #print(nodeAct)
+      # print(nodeAct)
   output = nodeAct[:,-nOutput:]
   return output
 
