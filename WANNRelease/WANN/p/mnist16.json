@@ -2,7 +2,7 @@
     "task":"mnist16",
     "alg_nMean": 8,
     "alg_nReps": 1,
-    "maxGen": 200,
+    "maxGen": 801,
     "popSize": 50,
     "prob_initEnable": 0.05,
     "select_tournSize": 10

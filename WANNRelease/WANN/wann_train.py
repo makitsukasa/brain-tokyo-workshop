@@ -31,7 +31,8 @@ def master():
 
     data = gatherData(data,wann,gen,hyp)
     print(gen, '\t - \t', data.display())
-    if gen == 200:
+    if gen == 800:
+        np.set_printoptions(threshold=10000000)
         print(data.tree[-1])
         np.set_printoptions(threshold=10000000)
         print(data.wMat)
