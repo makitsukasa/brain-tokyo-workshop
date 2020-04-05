@@ -7,6 +7,8 @@ import subprocess
 import numpy as np
 np.set_printoptions(precision=2, linewidth=160)
 
+import cProfile
+
 # MPI
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
@@ -262,9 +264,9 @@ def main(argv):
 
   # Launch main thread and workers
   if (rank == 0):
-    master()
+    cProfile.run('master()')
   else:
-    slave()
+    cProfile.run('slave()')
 
 if __name__ == "__main__":
   ''' Parse input and launch '''
