@@ -138,3 +138,4 @@ dmypy.json
 */hoge
 *.out
 *.png
+*.obj
