@@ -1,23 +1,26 @@
-import numpy as np
+try:
+    import cupy as np
+except:
+    import numpy as np
 import warnings
 
 def nsga_sort(objVals, returnFronts=False):
   """Returns ranking of objective values based on non-dominated sorting.
   Optionally returns fronts (useful for visualization).
-  
+
   NOTE: Assumes maximization of objective function
-   
-  Args: 
+
+  Args:
     objVals - (np_array) - Objective values of each individual
               [nInds X nObjectives]
-    
-  Returns: 
+
+  Returns:
     rank    - (np_array) - Rank in population of each individual
             int([nIndividuals X 1])
     front   - (np_array) - Pareto front of each individual
-            int([nIndividuals X 1]) 
-  
-  Todo: 
+            int([nIndividuals X 1])
+
+  Todo:
     * Extend to N objectives
   """
   # Sort by dominance into fronts
@@ -26,13 +29,13 @@ def nsga_sort(objVals, returnFronts=False):
   # Rank each front by crowding distance
   for f in range(len(fronts)):
     x1 = objVals[fronts[f],0]
-    x2 = objVals[fronts[f],1]    
+    x2 = objVals[fronts[f],1]
     crowdDist = getCrowdingDist(x1) + getCrowdingDist(x2)
     frontRank = np.argsort(-crowdDist)
     fronts[f] = [fronts[f][i] for i in frontRank]
-    
+
   # Convert to ranking
-  tmp = [ind for front in fronts for ind in front]  
+  tmp = [ind for front in fronts for ind in front]
   rank = np.empty_like(tmp)
   rank[tmp] = np.arange(len(tmp))
 
@@ -43,24 +46,24 @@ def nsga_sort(objVals, returnFronts=False):
 
 def getFronts(objVals):
   """Fast non-dominated sort.
-  
-  Args: 
+
+  Args:
     objVals - (np_array) - Objective values of each individual
               [nInds X nObjectives]
-      
-  Returns: 
-    front   - [list of lists] - One list for each front: 
+
+  Returns:
+    front   - [list of lists] - One list for each front:
                                 list of indices of individuals in front
-    
-  Todo: 
+
+  Todo:
     * Extend to N objectives
 
   [adapted from: https://github.com/haris989/NSGA-II]
   """
-    
+
   values1 = objVals[:,0]
   values2 = objVals[:,1]
-  
+
   S=[[] for i in range(0,len(values1))]
   front = [[]]
   n=[0 for i in range(0,len(values1))]
@@ -104,21 +107,21 @@ def getFronts(objVals):
 def getCrowdingDist(objVector):
   """Returns crowding distance of a vector of values, used once on each front.
 
-  Note: Crowding distance of individuals at each end of front is infinite, as 
+  Note: Crowding distance of individuals at each end of front is infinite, as
   they don't have a neighbor.
 
-  Args: 
+  Args:
     objVector - (np_array) - Objective values of each individual
-                [nInds X nObjectives]      
-      
-  Returns: 
+                [nInds X nObjectives]
+
+  Returns:
     dist      - (np_array) - Crowding distance of each individual
                 [nIndividuals X 1]
   """
   # Order by objective value
   key = np.argsort(objVector)
   sortedObj = objVector[key]
-    
+
   # Distance from values on either side
   shiftVec = np.r_[np.inf,sortedObj,np.inf] # Edges have infinite distance
   warnings.filterwarnings("ignore", category=RuntimeWarning) # inf on purpose
@@ -127,7 +130,7 @@ def getCrowdingDist(objVector):
   crowd = prevDist+nextDist
   if (sortedObj[-1]-sortedObj[0]) > 0:
     crowd *= abs((1/sortedObj[-1]-sortedObj[0])) # Normalize by fitness range
-  
+
   # Restore original order
   dist = np.empty(len(key))
   dist[key] = crowd[:]

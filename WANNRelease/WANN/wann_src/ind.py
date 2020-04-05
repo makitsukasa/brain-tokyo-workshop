@@ -1,4 +1,7 @@
-import numpy as np
+try:
+    import cupy as np
+except:
+    import numpy as np
 import copy
 from graphviz import Digraph
 
@@ -247,8 +250,8 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   # Propagate signal through hidden to output nodes
   iNode = nInput+1
   for iNode in range(nInput+1,nNodes):
-      # rawAct = np.dot(nodeAct, wMat[:,iNode]).squeeze()
-      rawAct = np.zeros(nSamples)
+      rawAct = np.dot(nodeAct, wMat[:,iNode]).squeeze()
+      # rawAct = np.zeros(nSamples)
       nodeAct[:,iNode] = applyAct(aVec[iNode], rawAct)
       # print(nodeAct)
   output = nodeAct[:,-nOutput:]

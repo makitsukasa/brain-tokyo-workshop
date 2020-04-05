@@ -1,5 +1,8 @@
 from collections import namedtuple
-import numpy as np
+try:
+    import cupy as np
+except:
+    import numpy as np
 
 Game = namedtuple('Game', ['env_name', 'time_factor', 'actionSelect',
   'input_size', 'output_size', 'layers', 'i_act', 'h_act',
