@@ -230,18 +230,18 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   """
   # Turn weight vector into weight matrix
   if np.ndim(weights) < 2:
-      nNodes = int(np.sqrt(np.shape(weights)[0]))
-      wMat = cp.reshape(weights, (nNodes, nNodes))
+    nNodes = int(np.sqrt(np.shape(weights)[0]))
+    wMat = cp.reshape(weights, (nNodes, nNodes))
   else:
-      nNodes = np.shape(weights)[0]
-      wMat = cp.array(weights)
+    nNodes = np.shape(weights)[0]
+    wMat = cp.array(weights)
   wMat[cp.isnan(wMat)]=0
 
   # Vectorize input
   if np.ndim(inPattern) > 1:
-      nSamples = np.shape(inPattern)[0]
+    nSamples = np.shape(inPattern)[0]
   else:
-      nSamples = 1
+    nSamples = 1
 
   # Run input pattern through ANN
   nodeAct  = cp.zeros((nSamples,nNodes))
@@ -249,11 +249,20 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   nodeAct[:,1:nInput+1] = cp.array(inPattern)
 
   # Propagate signal through hidden to output nodes
-  iNode = nInput+1
-  for iNode in range(nInput+1,nNodes):
-      rawAct = cp.dot(nodeAct, wMat[:,iNode]).squeeze()
-      # rawAct = np.zeros(nSamples)
-      nodeAct[:,iNode] = applyAct(aVec[iNode], rawAct)
+  l = nInput+1
+  while l < nNodes:
+    r = l
+    while r < nNodes:
+      r += 1
+      if wMat[l:r,l:r].any():
+        break
+    rawAct = cp.dot(nodeAct, wMat[:,l:r]).squeeze()
+    if l + 1 == r:
+      nodeAct[:,l] = applyAct(aVec[l], rawAct)
+    else:
+      for i in range(l, r):
+        nodeAct[:,i] = applyAct(aVec[i], rawAct[:,i-l])
+    l = r + 1
   output = nodeAct[:,-nOutput:]
   return output
 
