@@ -4,10 +4,11 @@ import math
 import gym
 from gym import spaces
 from gym.utils import seeding
+import numpy as np
 try:
-    import cupy as np
+    import cupy as cp
 except:
-    import numpy as np
+    cp = np
 import sys
 import cv2
 import math
@@ -65,11 +66,11 @@ class ClassifyEnv(gym.Env):
     y = self.target[self.currIndx]
     m = y.shape[0]
 
-    # action = np.ones_like(action)
-
-
     if True:
-      p = np.argmax(action, axis=1)
+      try:
+        p = cp.asnumpy(cp.argmax(action, axis=1))
+      except:
+        p = np.argmax(action, axis=1)
       accuracy = (float(np.sum(p==y)) / self.batch)
       reward = accuracy
     else:

@@ -1,7 +1,8 @@
+import numpy as np
 try:
-    import cupy as np
+    import cupy as cp
 except:
-    import numpy as np
+    cp = np
 import copy
 from graphviz import Digraph
 
@@ -230,11 +231,11 @@ def act(weights, aVec, nInput, nOutput, inPattern):
   # Turn weight vector into weight matrix
   if np.ndim(weights) < 2:
       nNodes = int(np.sqrt(np.shape(weights)[0]))
-      wMat = np.reshape(weights, (nNodes, nNodes))
+      wMat = cp.reshape(weights, (nNodes, nNodes))
   else:
       nNodes = np.shape(weights)[0]
-      wMat = weights
-  wMat[np.isnan(wMat)]=0
+      wMat = cp.array(weights)
+  wMat[cp.isnan(wMat)]=0
 
   # Vectorize input
   if np.ndim(inPattern) > 1:
@@ -243,17 +244,16 @@ def act(weights, aVec, nInput, nOutput, inPattern):
       nSamples = 1
 
   # Run input pattern through ANN
-  nodeAct  = np.zeros((nSamples,nNodes))
+  nodeAct  = cp.zeros((nSamples,nNodes))
   nodeAct[:,0] = 1 # Bias activation
-  nodeAct[:,1:nInput+1] = inPattern
+  nodeAct[:,1:nInput+1] = cp.array(inPattern)
 
   # Propagate signal through hidden to output nodes
   iNode = nInput+1
   for iNode in range(nInput+1,nNodes):
-      rawAct = np.dot(nodeAct, wMat[:,iNode]).squeeze()
+      rawAct = cp.dot(nodeAct, wMat[:,iNode]).squeeze()
       # rawAct = np.zeros(nSamples)
       nodeAct[:,iNode] = applyAct(aVec[iNode], rawAct)
-      # print(nodeAct)
   output = nodeAct[:,-nOutput:]
   return output
 

@@ -1,9 +1,10 @@
 
 # Standard libraries
+import numpy as np
 try:
-    import cupy as np
+    import cupy as cp
 except:
-    import numpy as np
+    cp = np
 import math
 import copy
 import json
@@ -89,9 +90,9 @@ class Wann():
 
     # Node types: [1:input, 2:hidden, 3:bias, 4:output]
     node[1,0]             = 4 # Bias
-    node[1,1:p['ann_nInput']+1] = 1 # Input Nodes
-    node[1,(p['ann_nInput']+1):\
-           (p['ann_nInput']+p['ann_nOutput']+1)]  = 2 # Output Nodes
+    node[1,1:int(p['ann_nInput']+1)] = 1 # Input Nodes
+    node[1,int(p['ann_nInput']+1):\
+           int(p['ann_nInput']+p['ann_nOutput']+1)]  = 2 # Output Nodes
 
     # Node Activations
     node[2,:] = p['ann_initAct']

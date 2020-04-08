@@ -1,7 +1,4 @@
-try:
-    import cupy as np
-except:
-    import numpy as np
+import numpy as np
 import warnings
 
 def nsga_sort(objVals, returnFronts=False):

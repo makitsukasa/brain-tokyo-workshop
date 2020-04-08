@@ -1,7 +1,8 @@
+import numpy as np
 try:
-    import cupy as np
+    import cupy as cp
 except:
-    import numpy as np
+    cp = np
 import time
 import sys
 import random

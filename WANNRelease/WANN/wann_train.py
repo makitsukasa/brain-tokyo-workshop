@@ -4,10 +4,7 @@ import time
 import math
 import argparse
 import subprocess
-try:
-    import cupy as np
-except:
-    import numpy as np
+import numpy as np
 np.set_printoptions(precision=2, linewidth=160)
 
 import cProfile
@@ -267,9 +264,11 @@ def main(argv):
 
   # Launch main thread and workers
   if (rank == 0):
-    cProfile.run('master()')
+    master()
+    # cProfile.run('master()')
   else:
-    cProfile.run('slave()')
+    slave()
+    # cProfile.run('slave()')
 
 if __name__ == "__main__":
   ''' Parse input and launch '''
