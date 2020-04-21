@@ -267,9 +267,11 @@ def main(argv):
 
   # Launch main thread and workers
   if (rank == 0):
-    cProfile.run('master()')
+    # cProfile.run('master()')
+    master()
   else:
-    cProfile.run('slave()')
+    # cProfile.run('slave()')
+    slave()
 
 if __name__ == "__main__":
   ''' Parse input and launch '''
