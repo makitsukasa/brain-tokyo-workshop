@@ -1,7 +1,4 @@
-try:
-    import cupy as np
-except:
-    import numpy as np
+import numpy as np
 import time
 import sys
 import random

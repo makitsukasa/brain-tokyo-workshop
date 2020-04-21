@@ -1,11 +1,11 @@
+import numpy as np
 try:
-		import cupy as np
+	import cupy as cp
 except:
-		import numpy as np
+	cp = np
 import copy
 from graphviz import Digraph
 import inspect
-
 
 # -- Individual Class ---------------------------------------------------- -- #
 

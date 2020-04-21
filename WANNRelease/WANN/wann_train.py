@@ -4,10 +4,7 @@ import time
 import math
 import argparse
 import subprocess
-try:
-    import cupy as np
-except:
-    import numpy as np
+import numpy as np
 np.set_printoptions(precision=2, linewidth=160)
 
 import cProfile

@@ -4,10 +4,7 @@ import math
 import gym
 from gym import spaces
 from gym.utils import seeding
-try:
-    import cupy as np
-except:
-    import numpy as np
+import numpy as np
 import sys
 import cv2
 import math
