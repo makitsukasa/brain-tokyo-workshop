@@ -14,7 +14,7 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
-from wann_src import * # WANN evolution
+from wann_src import *
 from domain import *   # Task environments
 
 
@@ -33,11 +33,15 @@ def master():
 
     data = gatherData(data,wann,gen,hyp)
     print(gen, '\t - \t', data.display())
-    if gen == 800:
-        np.set_printoptions(threshold=10000000)
+    if gen == 100:
+        np.set_printoptions(threshold=10000000, precision=1, floatmode='fixed', suppress=True)
         print(data.tree[-1])
-        np.set_printoptions(threshold=10000000)
+        print("\nwNat")
         print(data.wMat)
+        print("\nnode")
+        print(data.node)
+        print("\nconn")
+        print(data.conn)
         print(data.order[-1])
 
   # Clean up and data gathering at end of run

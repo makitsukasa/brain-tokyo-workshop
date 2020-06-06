@@ -265,7 +265,7 @@ def mutAddConn(self, connG, nodeG, innov, gen):
     dest = np.where(nodeKey[:,1] > srcLayer)[0]
 
     # Finding already existing connections:
-    #   take all connection genes with this source (connG[1,:])
+    #   take  all connection genes with this source (connG[1,:])
     #   take the destination of those genes (connG[2,:])
     #   convert to nodeKey index (gotta be a better way in numpy...)
     srcIndx = np.where(connG[1,:]==nodeKey[src,0])[0]
@@ -289,7 +289,7 @@ def mutAddConn(self, connG, nodeG, innov, gen):
       # Record innovation
       newInnov = np.hstack((connNew[0:3].flatten(), -1, gen))
       innov = np.hstack((innov,newInnov[:,None]))
-      break;
+      break
 
   return connG, innov
 

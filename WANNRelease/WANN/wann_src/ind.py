@@ -44,7 +44,7 @@ class Ind():
 			birth   - (int)      - generation born
 			species - (int)      - ID of species
 		"""
-		self.node    = np.copy (node)
+		self.node    = np.copy(node)
 		self.conn    = np.copy(conn)
 		self.nInput  = sum(node[1,:]==1)
 		self.nOutput = sum(node[1,:]==2)
@@ -261,7 +261,7 @@ def act(weights, aVec, nInput, nOutput, inPattern):
 
 	#################################################
 
-	nodeAct = np.zeros((nSamples,nNodes))
+	nodeAct = cp.zeros((nSamples,nNodes))
 	nodeAct[:,0] = 1 # Bias activation
 	nodeAct[:,1:nInput+1] = inPattern
 
@@ -278,37 +278,37 @@ def act(weights, aVec, nInput, nOutput, inPattern):
 				# print("r over", l, r, "\n", wMat[:,l:r])
 				break
 		if l == r or l + 1 == r:
-			rawAct = np.dot(nodeAct, wMat[:,l]).squeeze()
-			if not np.allclose(rawAct_orig[:, l], rawAct):
+			rawAct = cp.dot(nodeAct, wMat[:,l]).squeeze()
+			if not cp.allclose(rawAct_orig[:, l], rawAct):
 				print("FUUUUUUUUUUUUCK!!!!!!!!!!!!!", inspect.currentframe().f_lineno)
 				exit()
 			nodeAct[:,l] = applyAct(aVec[l], rawAct)
-			if not np.allclose(nodeAct_orig[:,l], nodeAct[:,l]):
+			if not cp.allclose(nodeAct_orig[:,l], nodeAct[:,l]):
 				print("FUUUUUUUUUUUUCK!!!!!!!!!!!!!", inspect.currentframe().f_lineno)
 				exit()
 		else:
 			# print("whole", wMat, "\n", l, r, "\n", wMat[:,l:r])
-			rawAct = np.dot(nodeAct, wMat[:,l:r]).squeeze()
+			rawAct = cp.dot(nodeAct, wMat[:,l:r]).squeeze()
 			for i in range(l, r):
-				rawAct_ = np.dot(nodeAct, wMat[:,i]).squeeze()
-				if not np.allclose(rawAct_orig[:, i], rawAct_):
+				rawAct_ = cp.dot(nodeAct, wMat[:,i]).squeeze()
+				if not cp.allclose(rawAct_orig[:, i], rawAct_):
 					print("FUUUUUUUUUUUUCK!!!!!!!!!!!!!", inspect.currentframe().f_lineno)
 					print("rawAct", rawAct_orig[:, i])
 					print("rawAct", rawAct_)
-				if not np.allclose(rawAct_orig[:, i], rawAct[:,i-l]):
+				if not cp.allclose(rawAct_orig[:, i], rawAct[:,i-l]):
 					print("FUUUUUUUUUUUUCK!!!!!!!!!!!!!", inspect.currentframe().f_lineno)
 					print("rawAct", rawAct_orig[:, i])
 					print("rawAct", rawAct[:,i-l])
 			for i in range(l, r):
 				nodeAct[:,i] = applyAct(aVec[i], rawAct[:,i-l])
-				if not np.allclose(nodeAct_orig[:,i], nodeAct[:,i]):
+				if not cp.allclose(nodeAct_orig[:,i], nodeAct[:,i]):
 					print("FUUUUUUUUUUUUCK!!!!!!!!!!!!!", inspect.currentframe().f_lineno)
 					exit()
 		l = r
 
-	if not np.allclose(output, nodeAct[:,-nOutput:]):
+	if not cp.allclose(output, nodeAct[:,-nOutput:]):
 		print("FUUUUUUUUUUUUCK!!!!!!!!!!!!!", inspect.currentframe().f_lineno)
-		sa = np.where(np.logical_not(np.isclose(output, nodeAct[:,-nOutput:])))
+		sa = cp.where(cp.logical_not(cp.isclose(output, nodeAct[:,-nOutput:])))
 		print(sa)
 		for i in range(len(sa[0])):
 			print(sa[0][i], end=", ")

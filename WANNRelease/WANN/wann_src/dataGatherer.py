@@ -66,6 +66,8 @@ class DataGatherer():
     # self.wMat     = np.append(self.wMat, ind.wMat)
     self.wMat     = ind.wMat
     self.order    = np.append(self.order, ind.order())
+    self.node     = ind.node
+    self.conn     = ind.conn
     self.node_med = np.append(self.node_med,np.median(nodes))
     self.conn_med = np.append(self.conn_med,np.median(conns))
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
@@ -83,9 +85,9 @@ class DataGatherer():
     # ------------------------------------------------------------------------
 
   def display(self):
-    return    "|---| Elite Fit: " + '{:.2f}'.format(self.fit_max[-1]) \
-         + " \t|---| Best Fit:  "  + '{:.2f}'.format(self.fit_top[-1]) \
-         + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1])
+    return    "|---| Elite Fit: " + '{:.8f}'.format(self.fit_max[-1]) \
+         + " \t|---| Best Fit:  "  + '{:.8f}'.format(self.fit_top[-1]) \
+         + " \t|---| Peak Fit:  "  + '{:.8f}'.format(self.fit_peak[-1])
 
 
   def tree(self):
