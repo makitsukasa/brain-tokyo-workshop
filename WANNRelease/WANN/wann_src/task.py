@@ -139,6 +139,8 @@ class Task():
     # Set weight values to test WANN with
     if (hyp['alg_wDist'] == "standard") and nVals==6: # Double, constant, and half signal
       wVals = np.array((-2,-1.0,-0.5,0.5,1.0,2))
+    elif (hyp['alg_wDist'] == "random"):
+      wVals = np.random.rand(nVals) * 4 - 2
     else:
       wVals = np.linspace(-self.absWCap, self.absWCap ,nVals)
 
